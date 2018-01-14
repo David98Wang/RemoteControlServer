@@ -7,11 +7,18 @@ using WebSocketSharp;
 using WebSocketSharp.Server;
 namespace RemoteControlServer
 {
+    public enum CMD
+    {
+        UP = 0,
+        DOWN = 1,
+        LEFT = 2,
+        RIGHT = 3
+    };
     class Program
     {
         static void Main(string[] args)
         {
-            var wssv = new WebSocketServer("ws://localhost:4848");
+            var wssv = new WebSocketServer("ws://192.168.1.105:30303");
             wssv.AddWebSocketService<Controller>("/Controller");
             wssv.Start();
             Console.WriteLine("Websocket server running on port " + wssv.Port.ToString());
@@ -23,7 +30,23 @@ namespace RemoteControlServer
     {
         protected override void OnMessage(MessageEventArgs e)
         {
-            Send("Message Received");
+            String[] data = e.Data.Split('|');
+            switch(int.Parse(e.Data))
+            {
+                case (int)CMD.UP:
+                    Console.WriteLine("UP"); 
+                    break;
+                case (int)CMD.DOWN:
+                    Console.WriteLine("DOWN");
+                    break;
+                case (int)CMD.LEFT:
+                    Console.WriteLine("LEFT");
+                    break;
+                case (int)CMD.RIGHT:
+                    Console.WriteLine("RIGHT");
+                    break;
+            }
+            Send(e.Data);
             base.OnMessage(e);
         }
     }
