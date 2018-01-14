@@ -26,14 +26,21 @@ namespace RemoteControlServer
             wssv.Stop();
         }
     }
+    
     public class Controller : WebSocketBehavior
     {
+        CMD last = CMD.UP;
         protected override void OnMessage(MessageEventArgs e)
         {
             String[] data = e.Data.Split('|');
+            if(e.Data=="req")
+            {
+                Send(((int)last).ToString());
+            }
             switch(int.Parse(e.Data))
             {
                 case (int)CMD.UP:
+                    last = CMD.UP;
                     Console.WriteLine("UP"); 
                     break;
                 case (int)CMD.DOWN:
